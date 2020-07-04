@@ -11,7 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +85,6 @@ public class Demo {
      */
     private List<TimeEmployee> timeNotWork(LocalDateTime[][] timeMatrix){
 
-        // To store the set of free interval
         List<TimeEmployee> timeEmployees = new ArrayList<>();
         // o(nlog(n))
         Arrays.sort(timeMatrix, (a, b) -> a[0].compareTo(b[0]));
@@ -104,29 +102,28 @@ public class Demo {
                 maxEndDate = currEnd;
             }
 
-            if (i == 1 && prevStart.toLocalTime().isAfter(Constants.localTimeStart)){
-                timeEmployees.add(new TimeEmployee(LocalDateTime.of(prevStart.getYear(),prevStart.getMonth(),prevStart.getDayOfMonth(),9,0,0),
+            if (i == 1 && prevStart.toLocalTime().isAfter(Constants.LOCAL_TIME_START)){
+                timeEmployees.add(new TimeEmployee(Utils.getTimeStartWorking(prevStart),
                         currStart));
             }
 
             if (prevEnd.isBefore(currStart) &&
-                    (prevEnd.toLocalTime().isAfter(Constants.localTimeStart) && prevEnd.toLocalTime().isBefore(Constants.localTimeEnd))
-                    && (currStart.toLocalTime().isAfter(Constants.localTimeStart) && currStart.toLocalTime().isBefore(Constants.localTimeEnd))) {
+                    (prevEnd.toLocalTime().isAfter(Constants.LOCAL_TIME_START) && prevEnd.toLocalTime().isBefore(Constants.LOCAL_TIME_END))
+                    && (currStart.toLocalTime().isAfter(Constants.LOCAL_TIME_START) && currStart.toLocalTime().isBefore(Constants.LOCAL_TIME_END))) {
                 timeEmployees.add(new TimeEmployee(prevEnd,
                         currStart));
             }
         }
 
-        if (maxEndDate.isBefore(LocalDateTime.of(maxEndDate.getYear(),maxEndDate.getMonth(),maxEndDate.getDayOfMonth(),18,0,0))){
+        if (maxEndDate.isBefore(Utils.getTimeEndWorking(maxEndDate))){
             timeEmployees.add(new TimeEmployee(
-                    maxEndDate, LocalDateTime.of(maxEndDate.getYear(),maxEndDate.getMonth(),maxEndDate.getDayOfMonth(),18,0,0))
+                    maxEndDate, Utils.getTimeEndWorking(maxEndDate))
             );
         }
 
 
         return timeEmployees;
     }
-
 
     /*
      * Print result

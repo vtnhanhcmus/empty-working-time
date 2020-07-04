@@ -90,21 +90,24 @@ public class Demo {
         Arrays.sort(timeMatrix, (a, b) -> a[0].compareTo(b[0]));
 
         LocalDateTime maxEndDate = timeMatrix[0][1];
+
+        LocalDateTime firstStart = timeMatrix[0][0];
+        if (firstStart.toLocalTime().isAfter(Constants.LOCAL_TIME_START)){
+            timeEmployees.add(new TimeEmployee(Utils.getTimeStartWorking(firstStart),
+                    firstStart));
+
+        }
+
         for (int i = 1; i < timeMatrix.length; i++)
         {
 
             LocalDateTime prevEnd = timeMatrix[i - 1][1];
-            LocalDateTime prevStart = timeMatrix[i - 1][0];
+
             LocalDateTime currStart = timeMatrix[i][0];
             LocalDateTime currEnd = timeMatrix[i][1];
 
             if (currEnd.isBefore(maxEndDate)){
                 maxEndDate = currEnd;
-            }
-
-            if (i == 1 && prevStart.toLocalTime().isAfter(Constants.LOCAL_TIME_START)){
-                timeEmployees.add(new TimeEmployee(Utils.getTimeStartWorking(prevStart),
-                        currStart));
             }
 
             if (prevEnd.isBefore(currStart) &&
